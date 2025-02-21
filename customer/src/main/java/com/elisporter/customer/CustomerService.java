@@ -2,8 +2,8 @@ package com.elisporter.customer;
 
 import org.springframework.stereotype.Service;
 
-@Service
-public record CustomerService() {
+@Service //can also be @Component
+public record CustomerService(CustomerRepository customerRepository) {
     public void registerCustomer(CustomerRegistrationRequest customerRegistrationRequest) {
 
 Customer customer = Customer.builder()
@@ -11,6 +11,9 @@ Customer customer = Customer.builder()
         .lastName(customerRegistrationRequest.lastName())
         .email(customerRegistrationRequest.email())
         .build();
+
+
+customerRepository.save(customer);
 
 //todo: validation
 
