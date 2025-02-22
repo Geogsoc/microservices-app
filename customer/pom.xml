@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.porter</groupId>
+    <groupId>com.elisporter</groupId>
     <artifactId>customer</artifactId>
 
     <properties>
