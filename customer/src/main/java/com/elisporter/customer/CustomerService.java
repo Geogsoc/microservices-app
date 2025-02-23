@@ -1,5 +1,7 @@
 package com.elisporter.customer;
 
+import com.elisporter.clients.fraud.FraudCheckResponse;
+import com.elisporter.clients.fraud.FraudClient;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
 
+    private final FraudClient fraudClient;
     public void registerCustomer(CustomerRegistrationRequest customerRegistrationRequest) {
 
         Customer customer = Customer.builder()
@@ -24,7 +27,7 @@ public class CustomerService {
 
         customerRepository.saveAndFlush(customer);
 
-        FraudCheckResponse fraudCheckResponse = restTemplate.getForObject("http://localhost:8081/api/v1/fraud-check/{customerId}", FraudCheckResponse.class, customer.getId());
+       FraudCheckResponse fraudCheckResponse = fraudClient.isFraudster(customer.getId());
 
         if (fraudCheckResponse.isFrauster()) {
             log.info("customer is fraudster: {}",customer.getId());

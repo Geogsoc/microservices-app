@@ -1,5 +1,6 @@
 package com.elisporter.fraud;
 
+import com.elisporter.clients.fraud.FraudCheckResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
