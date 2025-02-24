@@ -2,21 +2,23 @@ package com.elisporter.customer;
 
 import com.elisporter.clients.fraud.FraudCheckResponse;
 import com.elisporter.clients.fraud.FraudClient;
+import com.elisporter.clients.notification.NotificationClient;
+import com.elisporter.clients.notification.NotificationRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 @Service //can also be @Component
 @AllArgsConstructor
 @Slf4j
 public class CustomerService {
 
-    private final RestTemplate restTemplate;
 
     private final CustomerRepository customerRepository;
 
     private final FraudClient fraudClient;
+
+    private NotificationClient notificationClient;
     public void registerCustomer(CustomerRegistrationRequest customerRegistrationRequest) {
 
         Customer customer = Customer.builder()
@@ -27,14 +29,23 @@ public class CustomerService {
 
         customerRepository.saveAndFlush(customer);
 
+        // removes need for restTemplate.getForObject("path")
        FraudCheckResponse fraudCheckResponse = fraudClient.isFraudster(customer.getId());
 
-        if (fraudCheckResponse.isFrauster()) {
+        if (fraudCheckResponse.isFraudster()) {
             log.info("customer is fraudster: {}",customer.getId());
-            throw new IllegalStateException("Is fraudster");
+            throw new IllegalStateException("Is fraudster " + customer.getFirstName() +" "+ customer.getLastName());
         }
         log.info("customer is not a fraudster: {}", customer.getId());
 //todo: validation
+
+        NotificationRequest notificationRequest = new NotificationRequest(
+                customer.getId(),
+                customer.getEmail(),
+                String.format("Hi %s, welcome to the service...",
+                        customer.getFirstName()));
+
+        notificationClient.sendNotification(notificationRequest);
 
     }
 }
