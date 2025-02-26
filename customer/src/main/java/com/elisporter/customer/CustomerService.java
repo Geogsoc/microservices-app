@@ -1,5 +1,6 @@
 package com.elisporter.customer;
 
+import com.elisporter.amqp.RabbitMQMessageProducer;
 import com.elisporter.clients.fraud.FraudCheckResponse;
 import com.elisporter.clients.fraud.FraudClient;
 import com.elisporter.clients.notification.NotificationClient;
@@ -18,7 +19,8 @@ public class CustomerService {
 
     private final FraudClient fraudClient;
 
-    private NotificationClient notificationClient;
+    private RabbitMQMessageProducer rabbitMQMessageProducer;
+
     public void registerCustomer(CustomerRegistrationRequest customerRegistrationRequest) {
 
         Customer customer = Customer.builder()
@@ -30,14 +32,13 @@ public class CustomerService {
         customerRepository.saveAndFlush(customer);
 
         // removes need for restTemplate.getForObject("path")
-       FraudCheckResponse fraudCheckResponse = fraudClient.isFraudster(customer.getId());
+        FraudCheckResponse fraudCheckResponse = fraudClient.isFraudster(customer.getId());
 
         if (fraudCheckResponse.isFraudster()) {
-            log.info("customer is fraudster: {}",customer.getId());
-            throw new IllegalStateException("Is fraudster " + customer.getFirstName() +" "+ customer.getLastName());
+            log.info("customer is fraudster: {}", customer.getId());
+            throw new IllegalStateException("Is fraudster " + customer.getFirstName() + " " + customer.getLastName());
         }
         log.info("customer is not a fraudster: {}", customer.getId());
-//todo: validation
 
         NotificationRequest notificationRequest = new NotificationRequest(
                 customer.getId(),
@@ -45,7 +46,9 @@ public class CustomerService {
                 String.format("Hi %s, welcome to the service...",
                         customer.getFirstName()));
 
-        notificationClient.sendNotification(notificationRequest);
+//        notificationClient.sendNotification(notificationRequest);
+
+        rabbitMQMessageProducer.publish(notificationRequest, "internal.exchange", "internal.notification.routing-key");
 
     }
 }
