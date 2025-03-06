@@ -19,7 +19,7 @@ public class CustomerService {
 
     private final FraudClient fraudClient;
 
-    private RabbitMQMessageProducer rabbitMQMessageProducer;
+    private final RabbitMQMessageProducer rabbitMQMessageProducer;
 
     public void registerCustomer(CustomerRegistrationRequest customerRegistrationRequest) {
 

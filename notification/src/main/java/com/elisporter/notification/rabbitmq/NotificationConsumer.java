@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Component
 @AllArgsConstructor
@@ -18,7 +17,7 @@ public class NotificationConsumer {
     @RabbitListener(queues = "${rabbitmq.queue.notification}")
     public void consumer(NotificationRequest notificationRequest) {
 
-        log.info("Sending notification request: {}", notificationRequest);
+        log.info("Consumed from queue: {}", notificationRequest);
 
         notificationService.send(notificationRequest);
 

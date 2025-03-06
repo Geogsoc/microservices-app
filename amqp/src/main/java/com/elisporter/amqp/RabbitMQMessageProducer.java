@@ -27,16 +27,18 @@ import org.springframework.stereotype.Component;
 
 
 @Component
+@Slf4j
+@AllArgsConstructor
 public class RabbitMQMessageProducer {
 
     private final AmqpTemplate amqpTemplate;
-    private static final Logger log = LoggerFactory.getLogger(RabbitMQMessageProducer.class);
+ //   private static final Logger log = LoggerFactory.getLogger(RabbitMQMessageProducer.class);
 
     // Constructor-based dependency injection
-    @Autowired
-    public RabbitMQMessageProducer(AmqpTemplate amqpTemplate) {
-        this.amqpTemplate = amqpTemplate;
-    }
+//    @Autowired
+//    public RabbitMQMessageProducer(AmqpTemplate amqpTemplate) {
+//        this.amqpTemplate = amqpTemplate;
+//    }
 
     public void publish(Object payload, String exchange, String routingKey) {
 
