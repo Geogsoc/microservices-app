@@ -42,11 +42,13 @@ services:
       - "15672:15672"
 #    networks:
 #      - spring
-#  eureka-server:
-#    image: amigoscode/eureka-server:latest
-#    container_name: eureka-server
-#    ports:
-#      - "8761:8761"
+  eureka-server:
+    image: elisp521/eureka-server:latest
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    depends_on:
+      - zipkin
 #    environment:
 #      - SPRING_PROFILES_ACTIVE=docker
 #    networks:

@@ -1,3 +1,21 @@
-# Default ignored files
+# IntelliJ IDEA
+/.idea/
 /shelf/
 /workspace.xml
+
+# Maven
+/target/
+**/target/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
