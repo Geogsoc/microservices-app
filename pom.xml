@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -9,7 +10,7 @@
     <packaging>pom</packaging>
 
     <name>microservices-app</name>
-    <url>http://www.example.com</url>
+
     <modules>
         <module>customer</module>
         <module>fraud</module>
@@ -22,8 +23,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>17</maven.compiler.release>
-        <spring.maven.version.plugin.version>2.5.7</spring.maven.version.plugin.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <spring.boot.maven.plugin.version>2.5.7</spring.boot.maven.plugin.version>
         <spring.boot.dependencies.version>2.5.7</spring.boot.dependencies.version>
         <spring.cloud-version>2020.0.3</spring.cloud-version>
         <image>elisp521/${project.artifactId}:${project.version}</image>
@@ -52,41 +54,28 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-<!--            <version>1.18.36</version>-->
-<!--            <scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>2.5.7</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
     </dependencies>
 
-<!--    <profiles>-->
-<!--        <profile>-->
-<!--            <id>build-docker-image</id>-->
-<!--            <build>-->
-<!--                <plugins>-->
-<!--                    <plugin>-->
-<!--                        <groupId>com.google.cloud.tools</groupId>-->
-<!--                        <artifactId>jib-maven-plugin</artifactId>-->
-<!--                    </plugin>-->
-<!--                </plugins>-->
-<!--            </build>-->
-<!--        </profile>-->
-<!--    </profiles>-->
-
     <build>
-        <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+        <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${spring.maven.version.plugin.version}</version>
+                    <version>${spring.boot.maven.plugin.version}</version>
                     <executions>
                         <execution>
                             <goals>
@@ -101,9 +90,7 @@
                     <version>3.3.1</version>
                     <configuration>
                         <from>
-                            <image>
-                                eclipse-temurin:17
-                            </image>
+                            <image>eclipse-temurin:17@sha256:2b47a8ea946ce1e5365a1562414ed576e378b7b670cadff3fb98ebecf2890cdc</image>
                             <platforms>
                                 <platform>
                                     <architecture>arm64</architecture>
@@ -120,9 +107,6 @@
                                 <tag>latest</tag>
                             </tags>
                         </to>
-                        <container>
-                            <format>Docker</format> <!-- Specify Docker format -->
-                        </container>
                     </configuration>
                     <executions>
                         <execution>
@@ -134,8 +118,8 @@
                     </executions>
                 </plugin>
             </plugins>
-
         </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -149,3 +133,7 @@
         </plugins>
     </build>
 </project>
+
+
+
+
