@@ -6,29 +6,28 @@
 #  port: 8761
 #
 #zipkin:
-#  base-url: http://localhost:9411
+#  base-url: http://zipkin:9411
+#  enabled: true
+#
 #eureka:
 #  client:
 #    fetch registry: false
 #    register-with-eureka: false
 
-spring:
-  application:
-  name: eureka-server
-
 server:
   port: 8761
 
-zipkin:
-  base-url: http://zipkin:9411
-  enabled: true
+spring:
+  application:
+    name: eureka-server
+  zipkin:
+    base-url: http://zipkin:9411
+    enabled: true
 
 eureka:
   client:
-    fetch registry: false
+    fetch-registry: false
     register-with-eureka: false
-
-
 
 
 
