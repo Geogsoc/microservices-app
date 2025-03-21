@@ -22,5 +22,5 @@ eureka:
       default-zone: http://eureka-server:8761/eureka
     fetch registry: true
     register-with-eureka: true
-    enabled: true
+    enabled: false
 

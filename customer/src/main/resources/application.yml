@@ -18,6 +18,7 @@
 #
 #  zipkin:
 #    base-url: http://zipkin:9411
+#    enabled: true
 #  rabbitmq:
 #    addresses: rabbitmq:5672
 #
@@ -27,15 +28,17 @@
 #      default-zone: http://eureka-server:8761/eureka
 #    fetch registry: true
 #    register-with-eureka: true
+#    enabled: false
 #
 server:
   port: 8080
+
 spring:
   application:
     name: customer
   datasource:
     password: password
-    url: jdbc:postgresql://postgres:5432/customer
+    url: jdbc:postgresql://localhost:5432/customer
     username: amigoscode
   jpa:
     hibernate:
@@ -45,18 +48,11 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
-
-  zipkin:
-    base-url: http://zipkin:9411
-    enabled: true
   rabbitmq:
-    addresses: rabbitmq:5672
+    addresses: localhost:5672
 
 eureka:
   client:
     service-url:
-      default-zone: http://eureka-server:8761/eureka
-    fetch registry: true
-    register-with-eureka: true
-    enabled: true
-
+      defaultZone: http://localhost:8761/eureka
+    enabled: false
