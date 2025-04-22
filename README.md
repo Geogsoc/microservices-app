@@ -1,63 +1,93 @@
-# Microservices System with RabbitMQ, Eureka, API Gateway, and Docker
+# 🧩 Microservices System with RabbitMQ, Eureka, API Gateway, and Docker (Optional: Kubernetes via Minikube)
 
-This project demonstrates a microservices architecture where different modules communicate with each other using RabbitMQ for message queuing, Eureka for service discovery, and PostgreSQL for data storage. The services are containerized using Docker to make it easy to deploy, scale, and manage the entire application.
+This project showcases a **microservices architecture** designed to **register new customers for a sports betting and casino website**, while also checking against a list of **known bonus abusers**. 
+Services communicate asynchronously using **RabbitMQ**, register via **Eureka** for service discovery, and persist data using **PostgreSQL**. The entire system is containerized with **Docker**, and can also be deployed locally using **Kubernetes with Minikube**.
 
-## Architecture Overview
 
-The system consists of the following key components:
+### Optional Services
 
-1. **API Gateway (ApiGWApplication)**:
-    - The API Gateway serves as the entry point for clients to interact with the backend services.
-    - It registers itself with Eureka for service discovery and forwards requests to the appropriate backend microservices.
-    - It centralizes routing, load balancing, and cross-cutting concerns like authentication and logging.
+This project includes an [Eureka Server](./eureka-server) and an [API Gateway](./api-gateway), which are **not required for local development**.
 
-2. **Eureka Server (EurekaServerApplication)**:
-    - Acts as a service registry, enabling microservices to register themselves and dynamically discover each other.
-    - Uses the `@EnableEurekaServer` annotation to function as the Eureka server, allowing for flexible and scalable service communication.
+They are useful for:
+- Dynamic service discovery (Eureka)
+- Centralized routing and cross-cutting concerns (Gateway)
 
-3. **Fraud Service**:
-    - Provides functionality to check if a customer is fraudulent.
-    - Uses a `FraudCheckService` to simulate fraud detection and logs the results in the `FraudCheckHistoryRepository`.
+To run them, activate the `eureka` and `gateway` Spring profiles or include them in Docker Compose.
 
-4. **Customer Service**:
-    - Handles customer registration and checks if the customer is flagged as a fraudster using the Fraud Service.
-    - If the customer is not flagged, it publishes a notification request via RabbitMQ to notify the customer.
+---
 
-5. **Notification Service**:
-    - Sends notifications (e.g., welcome messages) to customers after successful registration.
-    - Uses RabbitMQ to receive notification requests and stores them in the `NotificationRepository`.
+## ⚙️ Architecture Overview
 
-6. **RabbitMQ Communication**:
-    - AMQP (Advanced Message Queuing Protocol) is used for asynchronous communication between services.
-    - RabbitMQ acts as the message broker, with the system components publishing and consuming messages using `AmqpTemplate`.
-    - `Jackson2JsonMessageConverter` is used for message serialization, converting objects into JSON format for message transmission.
+The system is composed of the following microservices and infrastructure components:
 
-7. **PostgreSQL Database**:
-    - The project uses PostgreSQL as the database for storing customer and notification data. It is managed via Docker for easy setup and containerization.
+### 1. **Customer Service**
+- Handles customer registration.
+- Calls the Fraud Service to verify legitimacy.
+- Publishes a notification event to RabbitMQ if the customer is clean.
 
-## Docker Setup
+### 2. **Fraud Service**
+- Checks whether a customer is marked as a fraudster.
+- Persists check results in `FraudCheckHistoryRepository`.
 
-The application is fully containerized using Docker. The following services are defined in `docker-compose.yml`:
+### 3. **Notification Service**
+- Listens for events from RabbitMQ.
+- Sends notifications (e.g., welcome messages) and logs them to `NotificationRepository`.
 
-### Services
-1. **PostgreSQL**:
-    - A container running PostgreSQL for data storage.
-    - Configured with a user `amigoscode` and password `password`.
+### 4. **RabbitMQ Messaging**
+- Services communicate asynchronously using **AMQP** via RabbitMQ.
+- `AmqpTemplate` is used to send/receive messages.
+- Messages are serialized into JSON using `Jackson2JsonMessageConverter`.
 
-2. **pgAdmin**:
-    - A container running pgAdmin to interact with the PostgreSQL database via a web interface.
-    - Accessible on port `5050`.
+### 5. **PostgreSQL Database**
+- Stores customer and notification data.
+- Managed through Docker (or Kubernetes pods with persistent volumes).
 
-3. **RabbitMQ**:
-    - A container running RabbitMQ, the message broker.
-    - Provides access to the RabbitMQ management interface on port `15672`.
+---
 
-4. **Zipkin**:
-    - A container running Zipkin for distributed tracing, helping with monitoring and debugging microservices.
+## 🚀 Deployment Options
 
-5. **Eureka Server**:
-    - A container running Eureka Server for service discovery.
-    - Accessible on port `8761`.
+### 🐳 Docker
 
-6. **Other Services**:
-    - Other services like `apigw`, `customer`, `fraud`, and `notification` can be defined similarly to the others, using Docker containers with respective configurations.
+The application is fully containerized with Docker. Services are defined in `docker-compose.yml`:
+
+#### Services:
+
+- **PostgreSQL**  
+  Database service
+   - User: `amigoscode`
+   - Password: `password`
+
+- **pgAdmin**  
+  Web UI for PostgreSQL
+   - Accessible at `localhost:5050`
+
+- **RabbitMQ**  
+  Message broker
+   - Management console at `localhost:15672`
+
+- **Zipkin**  
+  Distributed tracing tool for monitoring microservices
+
+- **Eureka Server**  
+  Service registry for dynamic discovery
+   - Accessible at `localhost:8761`
+
+- **Core Services**  
+  Microservices such as `customer`, `fraud`, `notification`, and `apigw` are each containerized and wired together via Docker networks.
+
+---
+
+### ☸️ Kubernetes (via Minikube)
+
+You can also run the entire system in Kubernetes using Minikube:
+
+- Each microservice is deployed as a **Pod** using its own **Deployment** and **Service** YAML.
+- Infrastructure components like RabbitMQ, PostgreSQL, and Eureka can be exposed via **ClusterIP** or **NodePort**.
+- Great for simulating a cloud-native deployment locally.
+
+To get started:
+```bash
+minikube start
+kubectl apply -f k8s/
+
+
